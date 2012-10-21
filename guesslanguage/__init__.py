@@ -1,1 +1,1 @@
-from guesslanguage.core import LangGuess getInstance
+from guesslanguage.core import LangGuess, getInstance
