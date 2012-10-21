@@ -30,9 +30,23 @@
     
 '''
 
-import codecs, os, re, sys, unicodedata
-from common import *
-from utils import *
+import codecs
+import os
+import re
+import sys
+import unicodedata
+
+from langdetect import _detect_lang
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
+from json import dumps
+
+
+
 __all__ = ["LangGuess", "getInstance"]
 
 try:
@@ -534,32 +548,28 @@ def normalize(u):
     u = nonAlphaRe.sub(' ', u)
     u = spaceRe.sub(' ', u)
     return u
-class LangGuess(SilpaModule):
+
+class LangGuess:
     def __init__(self):
-        self.template=os.path.join(os.path.dirname(__file__), 'guess_language.html')
-        self.response = SilpaResponse(self.template)
         _load_models()    
         
-    @ServiceMethod          
     def guessLanguage(self,text):
         lang = guessLanguageName(text)
         if lang ==  'UNKNOWN':
             firstWord = text.split()[0] 
-            lang = detect_lang(firstWord)[firstWord]
+            lang = _detect_lang(firstWord)[firstWord]
             lang = _getName(lang.split("_")[0])
         return lang 
         
-    @ServiceMethod          
     def guessLanguageId(self,text):
         lang = guessLanguage(text)
         if lang ==  'UNKNOWN':
             firstWord = text.split()[0] 
-            lang = detect_lang(firstWord)[firstWord]
+            lang = _detect_lang(firstWord)[firstWord]
         return lang 
         
-    @ServiceMethod          
     def getScriptName(self,text):
-        return  dumps(detect_lang(text))
+        return  dumps(_detect_lang(text))
         
     def get_module_name(self):
         return "Guess Language"
