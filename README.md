@@ -1,4 +1,4 @@
-guess-language
-==============
+guesslang
+=========
 
-Language guessing library for python
+Python module for guessing  the primary language of given text.
