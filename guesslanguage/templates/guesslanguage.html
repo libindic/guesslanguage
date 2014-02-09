@@ -44,24 +44,23 @@
 {% endblock %}
 
 {% block content %}
-<div class="well">
-    <h2>Guess the language</h2></hr>
-    <p class="help-block">Enter the text for guessing the language in the below text area.
-         You can give the text in any language and even with mixed language
-        </p>
-    <form class="form-horizontal" action="" method="post">
-        <textarea  name='input_text' id='id1' rows="10" style="width: 98.5%;"></textarea>
-        <span class="help-block"></span>
-        <div class="control-group">
-            <div class="controls">
-                <button class="btn" type="submit" id="Convert">Guess</button>
-            </div>
-        </div>
-    </form>
-    <hr/>
-    <div id="progress" class="alert alert-info hide"></div>
-    <div id="successmessage" class="alert alert-success hide"></div>
-    <div id="errormessage" class="alert alert-error hide"></div>
-    <div id="result" class="alert alert-success hide"></div>
+<div class="page-header">
+    <h1>Guess the language</h1>
 </div>
+
+<p>Enter the text for guessing the language in the below text area.
+You can give the text in any language and even with mixed language</p>
+
+<form class="form-horizontal" action="" method="post">
+    <div class="form-group">
+        <textarea name='input_text' id='id1' rows=10 class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-default" type="submit" id="Convert">Guess</button>
+    </div>
+</form>
+
+<div id="progress" class="alert alert-info silpa-hide"></div>
+<div id="errormessage" class="alert alert-danger silpa-hide"></div>
+<div id="result" class="alert alert-success silpa-hide"></div>
 {% endblock %}
