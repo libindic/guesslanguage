@@ -399,7 +399,7 @@ def find_runs(text):
     run_types = defaultdict(int)
 
     totalCount = 0
-    from blocks import unicodeBlock
+    from .blocks import unicodeBlock
     for c in text:
         if c.isalpha():
             block = unicodeBlock(c)
