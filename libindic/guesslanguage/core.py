@@ -342,7 +342,10 @@ def guessLanguage(text):
         return UNKNOWN
 
     if isinstance(text, str):
-        text = unicode(text, 'utf-8')  # noqa: F821
+        try:
+            text = unicode(text, 'utf-8')  # noqa: F821
+        except:
+            pass
 
     text = normalize(text)
 
