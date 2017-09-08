@@ -39,7 +39,10 @@ class blocks_test(unittest.TestCase):
         self.assertBlock('Cyrillic', 0x421)
 
     def assertBlock(self, name, c):
-        c = unichr(c)
+        try:
+            c = unichr(c)  # noqa: F821
+        except:
+            c = chr(c)
         block = unicodeBlock(c)
         self.assertEquals(
             name, unicodeBlock(c), '%s != %s for %r' %

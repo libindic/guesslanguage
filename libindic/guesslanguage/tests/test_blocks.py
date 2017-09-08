@@ -18,6 +18,7 @@
 from testtools import TestCase
 
 from ..blocks import unicodeBlock
+from itertools import chain
 
 
 class BlocksTest(TestCase):
@@ -26,7 +27,10 @@ class BlocksTest(TestCase):
         super(BlocksTest, self).setUp()
 
     def assertBlock(self, name, c):
-        c = unichr(c)
+        try:
+            c = unichr(c)  # noqa: F821
+        except:
+            c = chr(c)
         block = unicodeBlock(c)
         self.assertEquals(name, unicodeBlock(c),
                           '%s != %s for %r' % (name, block, c))
@@ -34,9 +38,12 @@ class BlocksTest(TestCase):
     def test_unicodeBlock(self):
         for c in range(128):
             self.assertBlock('Basic Latin', c)
-
-        for c in range(0x80, 0x180) + range(0x250, 0x2B0):
-            self.assertBlock('Extended Latin', c)
+        try:
+            for c in range(0x80, 0x180) + range(0x250, 0x2B0):
+                self.assertBlock('Extended Latin', c)
+        except:
+            for c in chain(range(0x80, 0x180), range(0x250, 0x2B0)):
+                self.assertBlock('Extended Latin', c)
 
         self.assertBlock('Thai', 0xE00)
         self.assertBlock('Thai', 0xE7F)
