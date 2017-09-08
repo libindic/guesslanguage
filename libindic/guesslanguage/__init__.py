@@ -1,1 +1,1 @@
-from .core  import LangGuess, getInstance
+from .core import LangGuess, getInstance

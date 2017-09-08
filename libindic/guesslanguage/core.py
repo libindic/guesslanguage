@@ -1,34 +1,36 @@
-''' Guess the language of text.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-    Based on guesslanguage.cpp by Jacob R Rideout for KDE
-    http://websvn.kde.org/branches/work/sonnet-refactoring/common/nlp/guesslanguage.cpp?view=markup
-    which itself is based on Language::Guess by Maciej Ceglowski
-    http://languid.cantbedone.org/
+# Guess the language of text.
+#
+# Based on guesslanguage.cpp by Jacob R Rideout for KDE
+# http://websvn.kde.org/branches/work/sonnet-refactoring/common/nlp/guesslanguage.cpp?view=markup
+# which itself is based on Language::Guess by Maciej Ceglowski
+# http://languid.cantbedone.org/
+#
+# Copyright (c) 2008, Kent S Johnson
+#
+# C++ version is Copyright (c) 2006 Jacob R Rideout <kde@jacobrideout.net>
+# Perl version is (c) 2004-6 Maciej Ceglowski
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
+#
+# Note: Language::Guess is GPL-licensed. KDE developers received permission
+# from the author to distribute their port under LGPL:
+# http://lists.kde.org/?l=kde-sonnet&m=116910092228811&w=2
 
-    Copyright (c) 2008, Kent S Johnson
-
-    C++ version is Copyright (c) 2006 Jacob R Rideout <kde@jacobrideout.net>
-    Perl version is (c) 2004-6 Maciej Ceglowski
-
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
-    Note: Language::Guess is GPL-licensed. KDE developers received permission
-    from the author to distribute their port under LGPL:
-    http://lists.kde.org/?l=kde-sonnet&m=116910092228811&w=2
-
-'''
 
 import codecs
 import os
@@ -40,7 +42,7 @@ __all__ = ["LangGuess", "getInstance"]
 
 try:
     from collections import defaultdict
-except:
+except BaseException:
     class defaultdict(dict):
         def __init__(self, default_factory=None, *a, **kw):
             if (default_factory is not None and
@@ -85,8 +87,11 @@ except:
 
 MIN_LENGTH = 20
 
-BASIC_LATIN = "en_US ceb ha so tlh id haw la sw eu nr nso zu_ZA xh ss st tn ts".split()
-EXTENDED_LATIN = "cs af_ZA pl_PL hr_HR ro sk sl tr hu_HU az et sq ca es fr de nl it_IT da is nb sv fi lv pt ve lt tl cy".split()
+BASIC_LATIN = "en_US ceb ha so tlh id haw la sw eu nr ".split() + \
+              "nso zu_ZA xh ss st tn ts".split()
+EXTENDED_LATIN = "cs af_ZA pl_PL hr_HR ro sk sl tr hu_HU az et sq ".split() + \
+                 "ca es fr de nl it_IT da is nb sv fi lv pt ve lt ".split() + \
+                 "tl cy".split()
 ALL_LATIN = BASIC_LATIN + EXTENDED_LATIN
 CYRILLIC = "ru uk kk uz mn sr mk bg ky".split()
 ARABIC = "ar fa ps ur".split()
@@ -211,7 +216,6 @@ NAME_MAP = {
     "ts": "Tsonga",
     "tw": "Twi",
     "uk": "Ukrainian",
-    "uk": "Ukranian",
     "ur": "Urdu",
     "uz": "Uzbek",
     "ve": "Venda",
@@ -306,7 +310,6 @@ IANA_MAP = {
     "tr": 26500,
     "tw": 1499,
     "uk": 26510,
-    "uk": 26520,
     "ur": 26530,
     "uz": 26540,
     "vi": 26550,
@@ -407,7 +410,7 @@ def find_runs(text):
     # and extended additional latin if over 10% (for Vietnamese)
     relevant_runs = []
     for key, value in run_types.items():
-        pct = (value*100) / totalCount
+        pct = (value * 100) / totalCount
         if pct >= 40:
             relevant_runs.append(key)
         elif key == "Basic Latin" and (pct >= 15):
@@ -429,21 +432,23 @@ def _identify(sample, scripts):
     if "Greek and Coptic" in scripts:
         return "el"
 
-    if "Katakana" in scripts or "Hiragana" in scripts or "Katakana Phonetic Extensions" in scripts:
+    if "Katakana" in scripts or "Hiragana" in scripts or \
+            "Katakana Phonetic Extensions" in scripts:
         return "ja"
 
     if "CJK Unified Ideographs" in scripts or "Bopomofo" in scripts \
             or "Bopomofo Extended" in scripts or "KangXi Radicals" in scripts:
 
-# This is in both Ceglowski and Rideout
-# I can't imagine why...
-#            or "Arabic Presentation Forms-A" in scripts
+        # This is in both Ceglowski and Rideout
+        # I can't imagine why...
+        #            or "Arabic Presentation Forms-A" in scripts
         return "zh"
 
     if "Cyrillic" in scripts:
         return check(sample, CYRILLIC)
 
-    if "Arabic" in scripts or "Arabic Presentation Forms-A" in scripts or "Arabic Presentation Forms-B" in scripts:
+    if "Arabic" in scripts or "Arabic Presentation Forms-A" in scripts or \
+            "Arabic Presentation Forms-B" in scripts:
         return check(sample, ARABIC)
 
     if "Devanagari" in scripts:
@@ -496,8 +501,8 @@ def createOrderedModel(content):
     trigrams = defaultdict(int)    # QHash<QString,int>
     content = content.lower()
 
-    for i in xrange(0, len(content)-2):
-        trigrams[content[i:i+3]] += 1
+    for i in xrange(0, len(content) - 2):
+        trigrams[content[i:i + 3]] += 1
 
     return sorted(trigrams.keys(), key=lambda k: (-trigrams[k], k))
 
@@ -522,8 +527,9 @@ def distance(model, knownModel):
 def _makeNonAlphaRe():
     nonAlpha = [u'[^']
     for i in range(sys.maxunicode):
-      c = unichr(i)
-      if c.isalpha(): nonAlpha.append(c)
+        c = unichr(i)
+        if c.isalpha():
+            nonAlpha.append(c)
     nonAlpha.append(u']')
     nonAlpha = u"".join(nonAlpha)
     return re.compile(nonAlpha)
@@ -563,13 +569,17 @@ class LangGuess:
         return lang
 
     def getScriptName(self, text):
-        return dumps(detect_lang(text))
+        return detect_lang(text)
 
     def get_module_name(self):
         return "Guess Language"
 
     def get_info(self):
-        return "Guess the language of given text. This module can detect more than 50 languages. Based on Language::Guess by Maciej Ceglowski(http://languid.cantbedone.org/)"
+        message = "Guess the language of given text. This module can " + \
+                  "detect more than 50 languages. Based on " + \
+                  "Language::Guess by Maciej Ceglowski" + \
+                  "(http://languid.cantbedone.org/)"
+        return message
 
 
 def getInstance():

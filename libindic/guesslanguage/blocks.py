@@ -55,6 +55,7 @@ def _loadBlocks():
 
     return endpoints, names
 
+
 _endpoints, _names = _loadBlocks()
 
 
