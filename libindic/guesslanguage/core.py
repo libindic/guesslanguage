@@ -37,7 +37,8 @@ import os
 import re
 import sys
 import unicodedata
-from silpa_common.langdetect import detect_lang
+from libindic.utils.langdetect import detect_lang
+
 __all__ = ["LangGuess", "getInstance"]
 
 try:
